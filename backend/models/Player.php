@@ -68,8 +68,7 @@ class Player
 
     public function readAll(): array
     {
-        // Modify the query to join with positions and clubs tables
-        $query = "
+         $query = "
             SELECT 
                 p.player_id, 
                 p.name, 

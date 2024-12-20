@@ -15,18 +15,18 @@ class PlayerRoutes
 
     public function handleRequest(): void
     {
-        // Get request method
+        
         $method = $_SERVER['REQUEST_METHOD'];
 
-        // Get URI parts
+       
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $uriParts = explode('/', $uri);
 
-        // Remove empty parts and index
+       
         $uriParts = array_filter($uriParts);
-        $uriParts = array_values($uriParts); // Re-index array after filtering
+        $uriParts = array_values($uriParts); 
 
-        // Set CORS headers
+       
         header('Access-Control-Allow-Origin: *');
         header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
         header('Access-Control-Allow-Headers: Content-Type, Authorization');
@@ -34,7 +34,7 @@ class PlayerRoutes
 
         switch ($method) {
             case 'POST':
-                // Create player
+               
                 if (count($uriParts) === 1 && $uriParts[0] === 'players') {
                     $data = json_decode(file_get_contents('php://input'), true);
                     $this->playerController->createPlayer($data);
@@ -42,11 +42,11 @@ class PlayerRoutes
                 break;
 
             case 'GET':
-                // Get all players
+                
                 if (count($uriParts) === 1 && $uriParts[0] === 'players') {
                     $this->playerController->getAllPlayers();
                 }
-                // Get single player
+               
                 elseif (
                     count($uriParts) === 2 &&
                     $uriParts[0] === 'players' &&
@@ -64,7 +64,7 @@ class PlayerRoutes
                 }
                 break;
             case 'DELETE':
-                // Delete player
+             
                 if (
                     count($uriParts) === 2 &&
                     $uriParts[0] === 'players' &&
@@ -75,7 +75,6 @@ class PlayerRoutes
                 break;
 
             case 'OPTIONS':
-                // Handle preflight requests for CORS
                 http_response_code(200);
                 break;
 
