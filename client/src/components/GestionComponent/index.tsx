@@ -1,15 +1,32 @@
-"use client"
+"use client";
 import { useState, useEffect } from "react";
 import Breadcrumb from "../Breadcrumbs/Breadcrumb";
 import { Pencil, Trash2 } from "lucide-react";
 import JoinForm from "../Sidebar/JoinForm";
- 
+
+interface Player {
+  player_id: string;
+  name: string;
+  age: number;
+  position: string;
+  club_name: string;
+  photo_url: string;
+  flag_url: string;
+  nationality: string;
+  pace: number;
+  shooting: number;
+  dribbling: number;
+  defending: number;
+  physical: number;
+  rating: number;
+}
+
 const GestionComponent = () => {
-  const [players, setPlayers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [isJoinFormActive, setIsJoinFormActive] = useState(false);
-  const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [players, setPlayers] = useState<Player[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isJoinFormActive, setIsJoinFormActive] = useState<boolean>(false);
+  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
 
   useEffect(() => {
     fetchPlayers();
@@ -17,33 +34,33 @@ const GestionComponent = () => {
 
   const fetchPlayers = async () => {
     try {
-      const response = await fetch('http://localhost:8003/players');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_HOST}/players`);
       if (!response.ok) throw new Error('Network response was not ok');
       const data = await response.json();
       setPlayers(data.data || []);
       setLoading(false);
-    } catch (error) {
+    } catch (error: any) {
       setError(error.message);
       setLoading(false);
     }
   };
 
-  const handleDelete = async (playerId) => {
+  const handleDelete = async (playerId: string) => {
     if (window.confirm('Are you sure you want to delete this player?')) {
       try {
-        const response = await fetch(`http://localhost:8003/players/${playerId}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_HOST}/players/${playerId}`, {
           method: 'DELETE',
         });
         if (!response.ok) throw new Error('Delete failed');
         fetchPlayers();
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error deleting player:', error);
         alert('Failed to delete player');
       }
     }
   };
 
-  const handleUpdate = (player) => {
+  const handleUpdate = (player: Player) => {
     setSelectedPlayer(player);
     setIsJoinFormActive(true);
   };
@@ -128,14 +145,14 @@ const GestionComponent = () => {
         </div>
       </div>
 
-       {isJoinFormActive && (
-      <JoinForm
-        setIsJoinFormActive={setIsJoinFormActive}
-        playerData={selectedPlayer}
-        onUpdate={fetchPlayers}
-        isEditMode={true}
-      />
-)}
+      {isJoinFormActive && (
+        <JoinForm
+          setIsJoinFormActive={setIsJoinFormActive}
+          playerData={selectedPlayer}
+          onUpdate={fetchPlayers}
+          isEditMode={true}
+        />
+      )}
     </>
   );
 };

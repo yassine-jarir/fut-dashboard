@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import { CgClose } from "react-icons/cg";
 
-export default function JoinForm({ setIsJoinFormActive, playerData, onUpdate, isEditMode }) {
+export default function JoinForm({
+  setIsJoinFormActive,
+  playerData,
+  onUpdate,
+  isEditMode,
+}) {
   const [formData, setFormData] = useState({
     name: "",
     age: "",
@@ -17,7 +22,7 @@ export default function JoinForm({ setIsJoinFormActive, playerData, onUpdate, is
     goalkeeping: "",
     flagUrl: "",
     nationality: "",
-    rating: ""
+    rating: "",
   });
 
   useEffect(() => {
@@ -37,23 +42,23 @@ export default function JoinForm({ setIsJoinFormActive, playerData, onUpdate, is
         goalkeeping: playerData.goalkeeping || "",
         flagUrl: playerData.flag_url || "",
         nationality: playerData.nationality || "",
-        rating: playerData.rating || ""
+        rating: playerData.rating || "",
       });
     }
   }, [playerData, isEditMode]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
-      const url = isEditMode 
-        ? `http://localhost:8003/players/${playerData.player_id}`
-        : 'http://localhost:8003/';
-        
+      const url = isEditMode
+        ? `${process.env.SERVER_HOST}/players/${playerData.player_id}`
+        : `${process.env.SERVER_HOST}`;
+
       const response = await fetch(url, {
-        method: isEditMode ? 'PUT' : 'POST',
+        method: isEditMode ? "PUT" : "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           id: isEditMode ? playerData.player_id : undefined,
@@ -70,24 +75,24 @@ export default function JoinForm({ setIsJoinFormActive, playerData, onUpdate, is
           dribbling: parseInt(formData.dribbling),
           defending: parseInt(formData.defending),
           physical: parseInt(formData.physical),
-          rating: parseInt(formData.rating)
-        })
+          rating: parseInt(formData.rating),
+        }),
       });
 
-      if (!response.ok) throw new Error('Failed to save player');
-      
+      if (!response.ok) throw new Error("Failed to save player");
+
       onUpdate?.();
       setIsJoinFormActive(false);
     } catch (error) {
-      console.error('Error saving player:', error);
-      alert('Failed to save player');
+      console.error("Error saving player:", error);
+      alert("Failed to save player");
     }
   };
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -106,7 +111,7 @@ export default function JoinForm({ setIsJoinFormActive, playerData, onUpdate, is
     { label: "Goalkeeping", field: "goalkeeping", type: "number" },
     { label: "Flag URL", field: "flagUrl", type: "text" },
     { label: "Nationality", field: "nationality", type: "text" },
-    { label: "Rating", field: "rating", type: "number" }
+    { label: "Rating", field: "rating", type: "number" },
   ];
 
   return (
@@ -153,7 +158,7 @@ export default function JoinForm({ setIsJoinFormActive, playerData, onUpdate, is
               type="submit"
               className="h-[40px] w-[130px] rounded-full bg-[var(--primary-color)] text-white"
             >
-              {isEditMode ? 'Update' : 'Send'}
+              {isEditMode ? "Update" : "Send"}
             </button>
           </div>
         </form>
