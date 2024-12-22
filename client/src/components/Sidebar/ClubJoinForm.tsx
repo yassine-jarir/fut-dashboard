@@ -4,16 +4,12 @@ import { CgClose } from "react-icons/cg";
 interface Club {
   club_id: string;
   name: string;
-  nationality: string;
   logo_url: string;
-  club: string;
 }
 
 interface FormData {
   name: string;
-  nationality: string;
-  flagUrl: string;
-  club: string;
+  logo_url: string;
 }
 
 interface ClubJoinFormProps {
@@ -29,23 +25,20 @@ export default function ClubJoinForm({
   clubData,
   onUpdate,
   isEditMode,
-  formType,
+ 
 }: ClubJoinFormProps) {
   const [formData, setFormData] = useState<FormData>({
     name: "",
-    nationality: "",
-    flagUrl: "",
-    club: "",
+    logo_url: "",
+ 
   });
-
+console.log(clubData)
   useEffect(() => {
     if (clubData && isEditMode) {
       setFormData({
         name: clubData.name,
-        nationality: clubData.nationality,
-        flagUrl: clubData.logo_url,
-        club: clubData.club,
-      });
+        logo_url: clubData.logo_url,
+       });
     }
   }, [clubData, isEditMode]);
 
@@ -54,7 +47,7 @@ export default function ClubJoinForm({
 
     try {
       const url = isEditMode
-        ? `http://localhost:8003/clubs/${clubData?.club_id}`
+        ? `http://localhost:8003/clubs/${clubData?.id}`
         : "http://localhost:8003/clubs";
 
       const response = await fetch(url, {
@@ -64,7 +57,7 @@ export default function ClubJoinForm({
         },
         body: JSON.stringify(formData),
       });
-
+      console.log(response)
       if (!response.ok) throw new Error("Failed to save club data");
 
       await onUpdate();
@@ -84,8 +77,7 @@ export default function ClubJoinForm({
 
   const formFields = [
     { label: "Club Name", field: "name" as keyof FormData, type: "text" },
-    { label: "Nationality", field: "nationality" as keyof FormData, type: "text" },
-    { label: "Flag URL", field: "flagUrl" as keyof FormData, type: "text" },
+     { label: "Flag URL", field: "logo_url" as keyof FormData, type: "text" },
   ];
 
   return (

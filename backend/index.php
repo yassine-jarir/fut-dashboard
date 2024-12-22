@@ -55,6 +55,10 @@ try {
             $clubRoutes = new ClubRoutes($connection);
             $clubRoutes->handleRequest();
             break;
+        // case 'nationalities':
+        //     $clubRoutes = new ClubRoutes($connection);
+        //     $clubRoutes->handleRequest();
+        //     break;
 
         default:
          

@@ -14,7 +14,7 @@ class Player
     public ?int $age = null;
     public ?int $position_id = null;
     public ?int $club_id = null;
-    public ?string $nationality = null;
+    public ?string $nationality_id = null;
     public ?int $rating = null;
     public ?string $photo_url = null;
     public ?string $flag_url = null;
@@ -35,11 +35,11 @@ class Player
         $query = "INSERT INTO {$this->table_name} 
                   (name,age, position_id, club_id, pace, photo_url, shooting, 
                    passing, dribbling, defending, physical,
-                   flag_url, nationality, rating) 
+                   nationality_id, rating) 
                   VALUES 
                   (:name, :age, :position_id, :club_id, :pace, :photo_url, :shooting, 
-                   :passing, :dribbling, :defending, :physical,
-                   :flag_url, :nationality, :rating)";
+                   :passing, :dribbling, :defending, :physical
+                 , :nationality_id, :rating)";
 
         try {
             $stmt = $this->connection->prepare($query);
@@ -55,8 +55,7 @@ class Player
             $stmt->bindValue(':dribbling', $this->dribbling);
             $stmt->bindValue(':defending', $this->defending);
             $stmt->bindValue(':physical', $this->physical);
-            $stmt->bindValue(':flag_url', $this->flag_url);
-            $stmt->bindValue(':nationality', $this->nationality);
+             $stmt->bindValue(':nationality_id', $this->nationality_id);
             $stmt->bindValue(':rating', $this->rating);
 
             return $stmt->execute();
@@ -73,10 +72,8 @@ class Player
                 p.player_id, 
                 p.name, 
                 p.age, 
-                p.nationality, 
                 p.rating, 
                 p.photo_url, 
-                p.flag_url, 
                 p.pace, 
                 p.shooting, 
                 p.passing, 
@@ -84,7 +81,9 @@ class Player
                 p.defending, 
                 p.physical, 
                 pos.position,   
-                c.name AS club_name      
+                c.name AS club_name,
+                n.name AS nationality_name,
+                n.flag_url 
             FROM 
                 {$this->table_name} p
             LEFT JOIN 
@@ -92,6 +91,9 @@ class Player
                 clubs c ON p.club_id = c.id
             LEFT JOIN 
                 positions pos ON p.position_id = pos.id
+            LEFT JOIN 
+                nationality n ON p.nationality_id = n.nationality_id
+            
         ";
 
         try {
@@ -112,26 +114,26 @@ class Player
                 p.player_id, 
                 p.name, 
                 p.age, 
-                p.nationality, 
                 p.rating, 
                 p.photo_url, 
-                p.flag_url, 
                 p.pace, 
                 p.shooting, 
                 p.passing, 
                 p.dribbling, 
                 p.defending, 
-                p.physical,
-                p.position_id,
-                p.club_id,
-                pos.position,
-                c.name AS club_name
+                p.physical, 
+                pos.position,   
+                c.name AS club_name,
+                n.name AS nationality_name,
+                n.flag_url 
             FROM 
                 {$this->table_name} p
             LEFT JOIN 
                 clubs c ON p.club_id = c.id
             LEFT JOIN 
                 positions pos ON p.position_id = pos.id
+            LEFT JOIN 
+                nationality n ON p.nationality_id = n.nationality_id
             WHERE 
                 p.player_id = :id";
 
@@ -140,6 +142,7 @@ class Player
             $stmt->bindValue(':id', $this->player_id);
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
+           
             return $result ?: null;
         } catch (\PDOException $exception) {
             error_log("Read Single Player Error: " . $exception->getMessage());
@@ -149,18 +152,14 @@ class Player
 
     public function update(): bool
     {
-        error_log("Starting update in Player model");
-        error_log("Player ID being updated: " . $this->player_id);
-
         $query = "UPDATE {$this->table_name} 
                   SET name = :name, 
                       age = :age, 
                       position_id = :position_id, 
                       club_id = :club_id, 
-                      nationality = :nationality, 
+                      nationality_id = :nationality_id, 
                       rating = :rating,
                       photo_url = :photo_url,
-                      flag_url = :flag_url,
                       pace = :pace,
                       shooting = :shooting,
                       passing = :passing,
@@ -168,43 +167,38 @@ class Player
                       defending = :defending,
                       physical = :physical
                   WHERE player_id = :player_id";
-
+    
         try {
             $stmt = $this->connection->prepare($query);
-
-            $params = [
-                ':name' => $this->name,
-                ':age' => $this->age,
-                ':position_id' => $this->position_id,
-                ':club_id' => $this->club_id,
-                ':nationality' => $this->nationality,
-                ':rating' => $this->rating,
-                ':photo_url' => $this->photo_url,
-                ':flag_url' => $this->flag_url,
-                ':pace' => $this->pace,
-                ':shooting' => $this->shooting,
-                ':passing' => $this->passing,
-                ':dribbling' => $this->dribbling,
-                ':defending' => $this->defending,
-                ':physical' => $this->physical,
-                ':player_id' => $this->player_id
+    
+             $params = [
+                ':name' => [$this->name, PDO::PARAM_STR],
+                ':age' => [$this->age, $this->age === null ? PDO::PARAM_NULL : PDO::PARAM_INT],
+                ':position_id' => [$this->position_id, $this->position_id === null ? PDO::PARAM_NULL : PDO::PARAM_INT],
+                ':club_id' => [$this->club_id, $this->club_id === null ? PDO::PARAM_NULL : PDO::PARAM_INT],
+                ':nationality_id' => [$this->nationality_id, $this->nationality_id === null ? PDO::PARAM_NULL : PDO::PARAM_INT],
+                ':rating' => [$this->rating, $this->rating === null ? PDO::PARAM_NULL : PDO::PARAM_INT],
+                ':photo_url' => [$this->photo_url, PDO::PARAM_STR],
+                ':pace' => [$this->pace, $this->pace === null ? PDO::PARAM_NULL : PDO::PARAM_INT],
+                ':shooting' => [$this->shooting, $this->shooting === null ? PDO::PARAM_NULL : PDO::PARAM_INT],
+                ':passing' => [$this->passing, $this->passing === null ? PDO::PARAM_NULL : PDO::PARAM_INT],
+                ':dribbling' => [$this->dribbling, $this->dribbling === null ? PDO::PARAM_NULL : PDO::PARAM_INT],
+                ':defending' => [$this->defending, $this->defending === null ? PDO::PARAM_NULL : PDO::PARAM_INT],
+                ':physical' => [$this->physical, $this->physical === null ? PDO::PARAM_NULL : PDO::PARAM_INT],
+                ':player_id' => [$this->player_id, PDO::PARAM_INT]
             ];
-
-            error_log("Parameters for update: " . print_r($params, true));
-
-            foreach ($params as $key => $value) {
-                $stmt->bindValue(
-                    $key,
-                    $value,
-                    $value === null ? PDO::PARAM_NULL :
-                    (is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR)
-                );
+    
+             foreach ($params as $key => [$value, $type]) {
+                $stmt->bindValue($key, $value, $type);
             }
-
+    
             $result = $stmt->execute();
-            error_log("Update execution result: " . ($result ? "true" : "false"));
-            error_log("Rows affected: " . $stmt->rowCount());
-
+    
+             if ($result && $stmt->rowCount() === 0) {
+                error_log("Update executed but no rows were affected. Player ID might not exist.");
+                return false;
+            }
+    
             return $result;
         } catch (\PDOException $exception) {
             error_log("Update Player Error: " . $exception->getMessage());
@@ -216,7 +210,7 @@ class Player
 
     public function delete(): bool
     {
-        $query = "DELETE FROM {$this->table_name} WHERE player_id = :player_id"; //:player_id is a placeholder in the SQL query.
+        $query = "DELETE FROM {$this->table_name} WHERE player_id = :player_id"; 
 
         try {
             $stmt = $this->connection->prepare($query);

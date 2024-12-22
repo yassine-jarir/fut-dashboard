@@ -19,10 +19,7 @@ class ClubController
     public function createClub(array $data): void
     {
         $this->clubModel->name = $data['name'] ?? null;
-        $this->clubModel->league = $data['league'] ?? null;
-        $this->clubModel->country = $data['country'] ?? null;
-        $this->clubModel->stadium = $data['stadium'] ?? null;
-        $this->clubModel->logo_url = $data['logo_url'] ?? null;
+          $this->clubModel->logo_url = $data['logo_url'] ?? null;
 
         if ($this->clubModel->create()) {
             Response::sendResponse(201, "Club created successfully");
@@ -70,9 +67,9 @@ class ClubController
         }
 
         $this->clubModel->name = $data['name'] ?? null;
-        $this->clubModel->league = $data['league'] ?? null;
-        $this->clubModel->country = $data['country'] ?? null;
-        $this->clubModel->stadium = $data['stadium'] ?? null;
+
+        $this->clubModel->nationality_id = $data['nationality_id'] ?? null;
+   
         $this->clubModel->logo_url = $data['logo_url'] ?? null;
 
         if ($this->clubModel->update()) {

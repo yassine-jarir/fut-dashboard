@@ -3,16 +3,17 @@ namespace Models;
 
 use PDO;
 
-class Club
+class Nationality
 {
     private PDO $connection;
-    private string $table_name = 'clubs';
+    private string $table_name = 'players';
 
     // Club properties
     public ?int $id = null;
     public ?string $name = null;
-    public ?string $nationality = null;
-
+    public ?string $league = null;
+    public ?string $country = null;
+    public ?string $stadium = null;
     public ?string $logo_url = null;
 
     public function __construct(PDO $connection)
@@ -23,15 +24,18 @@ class Club
     public function create(): bool
     {
         $query = "INSERT INTO {$this->table_name} 
-                  (name,    logo_url) 
+                  (name, league, country, stadium, logo_url) 
                   VALUES 
-                  (:name,    :logo_url)";
+                  (:name, :league, :country, :stadium, :logo_url)";
 
         try {
             $stmt = $this->connection->prepare($query);
 
             $stmt->bindValue(':name', $this->name);
-             $stmt->bindValue(':logo_url', $this->logo_url);
+            $stmt->bindValue(':league', $this->league);
+            $stmt->bindValue(':country', $this->country);
+            $stmt->bindValue(':stadium', $this->stadium);
+            $stmt->bindValue(':logo_url', $this->logo_url);
 
             return $stmt->execute();
         } catch (\PDOException $exception) {
@@ -74,6 +78,9 @@ class Club
     {
         $query = "UPDATE {$this->table_name} 
                   SET name = :name,
+                      league = :league,
+                      country = :country,
+                      stadium = :stadium,
                       logo_url = :logo_url
                   WHERE id = :id";
 
@@ -81,8 +88,9 @@ class Club
             $stmt = $this->connection->prepare($query);
 
             $stmt->bindValue(':name', $this->name);
-          
-        
+            $stmt->bindValue(':league', $this->league);
+            $stmt->bindValue(':country', $this->country);
+            $stmt->bindValue(':stadium', $this->stadium);
             $stmt->bindValue(':logo_url', $this->logo_url);
             $stmt->bindValue(':id', $this->id);
 

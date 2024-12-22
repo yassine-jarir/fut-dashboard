@@ -42,6 +42,7 @@ const ClubComponent = () => {
         const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_HOST}/clubs/${id}`, {
           method: 'DELETE',
         });
+        
         if (!response.ok) throw new Error('Delete failed');
         fetchClubs();
       } catch (error) {
@@ -95,7 +96,7 @@ const ClubComponent = () => {
                       <Pencil className="w-5 h-5" />
                     </button>
                     <button
-                      onClick={() => handleDelete(club.club_id)}
+                      onClick={() => handleDelete(club.id)}
                       className="p-2 text-red-600 hover:text-red-800 hover:bg-red-100 rounded-full transition-colors"
                       aria-label="Delete club"
                     >
