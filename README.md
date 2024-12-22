@@ -88,45 +88,4 @@ Ce projet vise à développer la plateforme FUT Champions Ultimate Team en utili
    npm run dev
    ```
 
----
-
-## User Stories
-
-### US01 : Gestion des Joueurs
-- En tant qu’administrateur, je veux pouvoir ajouter, modifier, supprimer et lister des joueurs afin de maintenir une base de données à jour.
-
-### US02 : Gestion des Équipes
-- En tant qu’administrateur, je veux pouvoir créer et gérer des équipes pour organiser les compétitions efficacement.
-
-### US03 : Internationalisation (Bonus)
-- En tant qu’utilisateur, je veux avoir la possibilité de changer la langue de l’interface afin d’utiliser la plateforme dans ma langue préférée.
-
-### US04 : Statistiques Dynamiques
-- En tant qu’administrateur, je veux visualiser des statistiques clés sur un tableau de bord afin de mieux comprendre l’utilisation de la plateforme.
-
-### US05 : Fluidité de Navigation (Bonus)
-- En tant qu’utilisateur, je veux pouvoir effectuer des actions sans rechargement de page grâce à AJAX afin d’améliorer mon expérience utilisateur.
-
----
-
-## Technologies Utilisées
-- **Frontend** : Next.js, TailwindCSS
-- **Backend** : PHP, MySQL
-- **Graphiques** : Chart.js
-- **Internationalisation** : Gestion des fichiers de langue en PHP
-
----
-
-## Modalités Pédagogiques
-- **Travail** : Individuel
-- **Durée de travail** : 7 jours
-- **Date de lancement du brief** : 12/12/2024 à 9:00
-- **Date limite de soumission** : 20/12/2024 avant midi
-
----
-
-## Modalités d'Évaluation
-- **Présentation du travail** : 10 minutes
-  - 5 minutes : Démonstration de la conception
-  - 10 minutes : Explication du code
-- **Challenge en classe** : 1h + 15 minutes de QCM
+ 
